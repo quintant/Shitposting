@@ -1,5 +1,7 @@
 import curses
 import time
+import os
+from playsound import playsound
 from random import choices
 
 
@@ -7,14 +9,14 @@ def game(stdscr, sped):
     curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_MAGENTA)
     rows = []
     speed = sped
-    for u in range(10):
+    for u in range(5):
         inos = ""
-        for _ in range(50):
+        for _ in range(60):
             inos += '.'
         rows.append(inos)
 
     character = '#'
-    character_index = 4
+    character_index = 2
     clear = ' '
     food = '='
     score = 0
@@ -26,6 +28,8 @@ def game(stdscr, sped):
     food_prob = 0.01
     score_diff = True
     speed_diff = True
+    super_diff = True
+    nightmare = False
     while True:
         if score == 15 and speed_diff:
             speed -= 5
@@ -34,6 +38,13 @@ def game(stdscr, sped):
             clear_prob -= 0.01
             food_prob += 0.01
             score_diff = False
+        elif score == 40 and super_diff:
+            clear_prob -= 0.02
+            food_prob += 0.02
+            speed -= 4
+            super_diff = False
+        elif score == 54:
+            nightmare = True
 
         stdscr.clear()
         c = stdscr.getch()
@@ -41,17 +52,20 @@ def game(stdscr, sped):
             if character_index != 0:
                 character_index -= 1
         elif c == ord('s'):
-            if character_index != 9:
+            if character_index != 4:
                 character_index += 1
 
-        for i in range(10):
+        for i in range(5):
             if frame == speed:
                 rows[i] = rows[i][1:]
                 ino = choices([clear, food], [clear_prob, food_prob])[0]
                 rows[i] += ino
                 if character_index != i:
                     if rows[i][0] == food:
-                        score -= 1
+                        if nightmare:
+                            score -= 3
+                        else:
+                            score -= 1
                         if score < 0:
                             stdscr.clear()
                             stdscr.addstr('\n\n')
@@ -65,6 +79,7 @@ def game(stdscr, sped):
             if character_index == i:
                 if rows[i][0] == food:
                     score += 1
+                    playsound(os.getcwd() + "/splat.mp3", block=False)
                 rows[i] = character + rows[i][1:]
 
             stdscr.addstr(rows[i] + '\n')
@@ -106,7 +121,7 @@ def start_menu(stdscr):
             elif c == ord('s'):
                 gamemode = 2
             elif c == ord(' '):
-                game(stdscr, 10)
+                game(stdscr, 11)
         else:
             stdscr.addstr('    Easy    \n', deselected)
             stdscr.addstr('    Hard    \n', deselected)
@@ -120,6 +135,7 @@ def start_menu(stdscr):
 
 
 screen = curses.initscr()
+#playsound("C:/Users/sigur/Music/bill.mp3", block=False)
 curses.start_color()
 curses.use_default_colors()
 curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_MAGENTA)
