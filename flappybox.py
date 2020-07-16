@@ -27,16 +27,13 @@ while True:
                 character_index += 1
         sup = False
 
-    temp_row = []
     clear_prob = 0.99
     food_prob = 0.01
-    for i in range(len(rows)):
+    for i in range(10):
         if frame == 4:
             rows[i] = rows[i][1:]
             ino = choices([clear, food], [clear_prob, food_prob])[0]
             rows[i] += ino
-            #print(ino)
-            temp_row.append(rows[i])
         if character_index == i:
             if rows[i][0] == food:
                 score += 1

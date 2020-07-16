@@ -1,2 +1,2 @@
-flappybox.py
+flappybox-curses.py
 pause
