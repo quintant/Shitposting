@@ -7,6 +7,7 @@ from random import choices
 
 def game(stdscr, sped):
     curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_MAGENTA)
+    curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_BLACK)
     rows = []
     speed = sped
     for u in range(5):
@@ -79,13 +80,13 @@ def game(stdscr, sped):
             if character_index == i:
                 if rows[i][0] == food:
                     score += 1
-                    playsound(os.getcwd() + "/splat.mp3", block=False)
+                    playsound(os.getcwd() + "/score.mp3", block=False)
                 rows[i] = character + rows[i][1:]
 
-            stdscr.addstr(rows[i] + '\n')
+            stdscr.addstr(rows[i] + '\n', curses.color_pair(5))
         if bob:
             break
-        stdscr.addstr('SCORE: ' + str(score))
+        stdscr.addstr('SCORE: ' + str(score), curses.color_pair(5))
         stdscr.refresh()
         time.sleep(0.005)
         if frame == speed:
